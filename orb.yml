@@ -7,10 +7,7 @@ executors:
     docker:
       - image: circleci/buildpack-deps
 
-jobs:
-  subset-preview:
-    description: Produce a "subset preview", which generates only the PDF
-    parameters: &leanpub-params
+base-leanpub-params: &leanpub-params
       book_slug:
         description: Slug of the book
         type: string
@@ -19,6 +16,11 @@ jobs:
         description: Your Leanpub API key
         type: string
         default: $LEANPUB_API_KEY
+
+jobs:
+  subset-preview:
+    description: Produce a "subset preview", which generates only the PDF
+    parameters: *leanpub-params
     executor: leanpub_executor
     steps:
       - trigger-subset-preview:
