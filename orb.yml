@@ -7,7 +7,7 @@ executors:
     docker:
       - image: circleci/buildpack-deps
 
-base-leanpub-params: &leanpub-params
+base-leanpub-params: &base-leanpub-params
       book_slug:
         description: Slug of the book
         type: string
@@ -20,7 +20,7 @@ base-leanpub-params: &leanpub-params
 jobs:
   subset-preview:
     description: Produce a "subset preview", which generates only the PDF
-    parameters: *leanpub-params
+    parameters: *base-leanpub-params
     executor: leanpub_executor
     steps:
       - trigger-subset-preview:
@@ -28,7 +28,7 @@ jobs:
           api_key: <<parameters.api_key>>
   full-preview:
     description: Produce a "full preview", for previewing all formats
-    parameters: *leanpub-params
+    parameters: *base-leanpub-params
     executor: leanpub_executor
     steps:
       - trigger-full-preview:
@@ -41,7 +41,7 @@ jobs:
       as the release notes to send. If no release notes are given,
       a "silent publish" is done.
     parameters:
-      <<: *leanpub-params
+      <<: *base-leanpub-params
       release_notes:
         type: string
         default: ""
@@ -59,7 +59,7 @@ jobs:
       notes can be disabled by setting the release_notes parameter
       to false.
     parameters:
-      <<: *leanpub-params
+      <<: *base-leanpub-params
       auto_release_notes:
         description: Produce release notes if a tag or commit message is available
         type: boolean
@@ -81,7 +81,7 @@ commands:
   api-call:
     description: Trigger a Leanpub API call
     parameters:
-      <<: *leanpub-params
+      <<: *base-leanpub-params
       endpoint:
         description: Path of the API endpoint without .json at the end
         type: string
@@ -99,7 +99,7 @@ commands:
           command: <<# parameters.dry_run >>echo<</ parameters.dry_run >> curl -d "api_key=<<parameters.api_key>>" <<parameters.extra_params>> https://leanpub.com/<<parameters.book_slug>>/<<parameters.endpoint>>.json
   trigger-subset-preview:
     description: Trigger a subset (PDF only) preview
-    parameters: *leanpub-params
+    parameters: *base-leanpub-params
     steps:
       - api-call:
           book_slug: <<parameters.book_slug>>
@@ -107,7 +107,7 @@ commands:
           endpoint: preview/subset
   trigger-full-preview:
     description: Trigger a full preview (all formats)
-    parameters: *leanpub-params
+    parameters: *base-leanpub-params
     steps:
       - api-call:
           book_slug: <<parameters.book_slug>>
@@ -116,7 +116,7 @@ commands:
   trigger-publish:
     description: Trigger publishing, with optional sending of release notes
     parameters:
-      <<: *leanpub-params
+      <<: *base-leanpub-params
       release_notes:
         description: Contents of the release notes to be sent out
         type: string
