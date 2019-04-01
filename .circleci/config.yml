@@ -18,28 +18,28 @@ workflows:
           requires:
             - orb-tools/pack
 
-      - orb-tools/trigger-integration-workflow:
-          name: trigger-integration-dev
-          context: orb-publishing
-          ssh-fingerprints: 23:d1:63:44:ad:e7:1a:b0:45:5e:1e:e4:49:ea:63:4e
-          cleanup-tags: true
-          requires:
-            - orb-tools/publish-dev
-          filters:
-            branches:
-              ignore: master
+      # - orb-tools/trigger-integration-workflow:
+      #     name: trigger-integration-dev
+      #     context: orb-publishing
+      #     ssh-fingerprints: 23:d1:63:44:ad:e7:1a:b0:45:5e:1e:e4:49:ea:63:4e
+      #     cleanup-tags: true
+      #     requires:
+      #       - orb-tools/publish-dev
+      #     filters:
+      #       branches:
+      #         ignore: master
 
-      - orb-tools/trigger-integration-workflow:
-          name: trigger-integration-master
-          context: orb-publishing
-          ssh-fingerprints: 23:d1:63:44:ad:e7:1a:b0:45:5e:1e:e4:49:ea:63:4e
-          cleanup-tags: true
-          tag: master
-          requires:
-            - orb-tools/publish-dev
-          filters:
-            branches:
-              only: master
+      # - orb-tools/trigger-integration-workflow:
+      #     name: trigger-integration-master
+      #     context: orb-publishing
+      #     ssh-fingerprints: 23:d1:63:44:ad:e7:1a:b0:45:5e:1e:e4:49:ea:63:4e
+      #     cleanup-tags: true
+      #     tag: master
+      #     requires:
+      #       - orb-tools/publish-dev
+      #     filters:
+      #       branches:
+      #         only: master
 
   integration-tests_prod-deploy:
     jobs:
