@@ -35,7 +35,7 @@ jobs:
           book-slug: <<parameters.book-slug>>
           api-key: <<parameters.api-key>>
   publish:
-    description: |
+    description: >
       Publish the book, with optional email of release notes. If the release-notes parameter is given, its contents is used as the release notes to send. If no release notes are given, a "silent publish" is done.
     parameters:
       <<: *base-leanpub-params
@@ -49,7 +49,7 @@ jobs:
           api-key: <<parameters.api-key>>
           release-notes: <<parameters.release-notes>>
   auto-publish:
-    description: |
+    description: >
       Publish the book, optionally sending out release notes using the message from the current tag (if not an annotated tag, the commit message from the tagged commit is used). Release notes can be disabled by setting the auto-release-notes parameter to false.
     parameters:
       <<: *base-leanpub-params
@@ -89,7 +89,7 @@ commands:
     steps:
       - run:
           name: Call Leanpub API /<<parameters.endpoint>>.json
-          command: |
+          command: >
             <<# parameters.dry-run >>echo <</ parameters.dry-run >>curl -d "api-key=<<parameters.api-key>>" <<parameters.extra-params>> https://leanpub.com/<<parameters.book-slug>>/<<parameters.endpoint>>.json
   trigger-subset-preview:
     description: Trigger a subset (PDF only) preview
