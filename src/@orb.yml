@@ -8,11 +8,11 @@ executors:
       - image: circleci/buildpack-deps
 
 base-leanpub-params: &base-leanpub-params
-      book-slug:
+      book_slug:
         description: Slug of the book
         type: string
         default: $CIRCLE_PROJECT_REPONAME
-      api-key:
+      api_key:
         description: Your Leanpub API key
         type: string
         default: $LEANPUB_API_KEY
@@ -24,36 +24,36 @@ jobs:
     executor: leanpub-executor
     steps:
       - trigger-subset-preview:
-          book-slug: <<parameters.book-slug>>
-          api-key: <<parameters.api-key>>
+          book_slug: <<parameters.book_slug>>
+          api_key: <<parameters.api_key>>
   full-preview:
     description: Produce a "full preview", for previewing all formats
     parameters: *base-leanpub-params
     executor: leanpub-executor
     steps:
       - trigger-full-preview:
-          book-slug: <<parameters.book-slug>>
-          api-key: <<parameters.api-key>>
+          book_slug: <<parameters.book_slug>>
+          api_key: <<parameters.api_key>>
   publish:
     description: >
-      Publish the book, with optional email of release notes. If the release-notes parameter is given, its contents is used as the release notes to send. If no release notes are given, a "silent publish" is done.
+      Publish the book, with optional email of release notes. If the release_notes parameter is given, its contents is used as the release notes to send. If no release notes are given, a "silent publish" is done.
     parameters:
       <<: *base-leanpub-params
-      release-notes:
+      release_notes:
         type: string
         default: ""
     executor: leanpub-executor
     steps:
       - trigger-publish:
-          book-slug: <<parameters.book-slug>>
-          api-key: <<parameters.api-key>>
-          release-notes: <<parameters.release-notes>>
+          book_slug: <<parameters.book_slug>>
+          api_key: <<parameters.api_key>>
+          release_notes: <<parameters.release_notes>>
   auto-publish:
     description: >
-      Publish the book, optionally sending out release notes using the message from the current tag (if not an annotated tag, the commit message from the tagged commit is used). Release notes can be disabled by setting the auto-release-notes parameter to false.
+      Publish the book, optionally sending out release notes using the message from the current tag (if not an annotated tag, the commit message from the tagged commit is used). Release notes can be disabled by setting the auto_release_notes parameter to false.
     parameters:
       <<: *base-leanpub-params
-      auto-release-notes:
+      auto_release_notes:
         description: Produce release notes if a tag or commit message is available
         type: boolean
         default: false
@@ -63,11 +63,11 @@ jobs:
       - run:
           name: Publish book
           command: |
-            export RELEASE_NOTES=<<# parameters.auto-release-notes>>$([[ -n "$CIRCLE_TAG" ]] && git cat-file -p `git rev-parse $CIRCLE_TAG` | sed '1,/^$/d')<</ parameters.auto-release-notes>>
+            export RELEASE_NOTES=<<# parameters.auto_release_notes>>$([[ -n "$CIRCLE_TAG" ]] && git cat-file -p `git rev-parse $CIRCLE_TAG` | sed '1,/^$/d')<</ parameters.auto_release_notes>>
             if [[ -n "$RELEASE_NOTES" ]]; then
-              echo curl -d "api-key=<<parameters.api-key>>" -d "publish[email_readers]=true" --data-url-encode "publish[release_notes]=$RELEASE_NOTES" https://leanpub.com/<<parameters.book-slug>>/publish.json
+              echo curl -d "api_key=<<parameters.api_key>>" -d "publish[email_readers]=true" --data-url-encode "publish[release_notes]=$RELEASE_NOTES" https://leanpub.com/<<parameters.book_slug>>/publish.json
             else
-              echo curl -d "api-key=<<parameters.api-key>>" https://leanpub.com/<<parameters.book-slug>>/publish.json
+              echo curl -d "api_key=<<parameters.api_key>>" https://leanpub.com/<<parameters.book_slug>>/publish.json
             fi
 
 commands:
@@ -78,46 +78,46 @@ commands:
       endpoint:
         description: Path of the API endpoint without .json at the end
         type: string
-      extra-params:
+      extra_params:
         description: Extra parameters to pass to the curl command
         type: string
         default: ""
-      dry-run:
+      dry_run:
         description: Echo the command instead of running it?
         type: boolean
         default: false
     steps:
       - run:
           name: Call Leanpub API /<<parameters.endpoint>>.json
-          command: <<#parameters.dry-run>>echo <</parameters.dry-run>>curl -d "api-key=<<parameters.api-key>>" <<parameters.extra-params>> https://leanpub.com/<<parameters.book-slug>>/<<parameters.endpoint>>.json
+          command: <<#parameters.dry_run>>echo <</parameters.dry_run>>curl -d "api_key=<<parameters.api_key>>" <<parameters.extra_params>> https://leanpub.com/<<parameters.book_slug>>/<<parameters.endpoint>>.json
   trigger-subset-preview:
     description: Trigger a subset (PDF only) preview
     parameters: *base-leanpub-params
     steps:
       - api-call:
-          book-slug: <<parameters.book-slug>>
-          api-key: <<parameters.api-key>>
+          book_slug: <<parameters.book_slug>>
+          api_key: <<parameters.api_key>>
           endpoint: preview/subset
   trigger-full-preview:
     description: Trigger a full preview (all formats)
     parameters: *base-leanpub-params
     steps:
       - api-call:
-          book-slug: <<parameters.book-slug>>
-          api-key: <<parameters.api-key>>
+          book_slug: <<parameters.book_slug>>
+          api_key: <<parameters.api_key>>
           endpoint: preview
   trigger-publish:
     description: Trigger publishing, with optional sending of release notes
     parameters:
       <<: *base-leanpub-params
-      release-notes:
+      release_notes:
         description: Contents of the release notes to be sent out
         type: string
         default: ""
     steps:
       - api-call:
-          dry-run: true
-          book-slug: <<parameters.book-slug>>
-          api-key: <<parameters.api-key>>
+          dry_run: true
+          book_slug: <<parameters.book_slug>>
+          api_key: <<parameters.api_key>>
           endpoint: publish
-          extra-params: <<# parameters.release-notes>>-d "publish[email_readers]=true" --data-url-encode "publish[release_notes]=<<parameters.release-notes>>"<</ parameters.release-notes >>
+          extra_params: <<# parameters.release_notes>>-d "publish[email_readers]=true" --data-url-encode "publish[release_notes]=<<parameters.release_notes>>"<</ parameters.release_notes >>
