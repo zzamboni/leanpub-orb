@@ -1,0 +1,18 @@
+description: Trigger a Leanpub API call according to the endpoint parameter.
+parameters:
+  <<: *base-leanpub-params
+  endpoint:
+    description: Path of the API endpoint without .json at the end
+    type: string
+  extra-params:
+    description: Extra parameters to pass to the curl command
+    type: string
+    default: ""
+  dry-run:
+    description: Echo the command instead of running it?
+    type: boolean
+    default: false
+steps:
+  - run:
+      name: Call Leanpub API /<<parameters.endpoint>>.json
+      command: <<#parameters.dry-run>>echo <</parameters.dry-run>>curl -d "api_key=<<parameters.api-key>>" <<parameters.extra-params>> https://leanpub.com/<<parameters.book-slug>>/<<parameters.endpoint>>.json

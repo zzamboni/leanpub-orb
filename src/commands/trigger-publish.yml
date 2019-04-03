@@ -1,0 +1,14 @@
+description: Trigger publishing, with optional sending of release notes if the release-notes parameter is specified.
+parameters:
+  <<: *base-leanpub-params
+  release-notes:
+    description: Contents of the release notes to be sent out
+    type: string
+    default: ""
+steps:
+  - api-call:
+      dry-run: true
+      book-slug: <<parameters.book-slug>>
+      api-key: <<parameters.api-key>>
+      endpoint: publish
+      extra-params: <<# parameters.release-notes>>-d "publish[email_readers]=true" --data-url-encode "publish[release_notes]=<<parameters.release-notes>>"<</ parameters.release-notes >>

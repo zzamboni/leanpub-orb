@@ -1,0 +1,16 @@
+description: >
+  Publish the book, with optional email of release notes. If the
+  release-notes parameter is given, its contents is used as the
+  release notes to send. If no release notes are given, a "silent
+  publish" is done.
+parameters:
+  <<: *base-leanpub-params
+  release-notes:
+    type: string
+    default: ""
+executor: leanpub-executor
+steps:
+  - trigger-publish:
+      book-slug: <<parameters.book-slug>>
+      api-key: <<parameters.api-key>>
+      release-notes: <<parameters.release-notes>>

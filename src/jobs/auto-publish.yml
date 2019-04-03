@@ -1,0 +1,26 @@
+description: >
+  Publish the book, optionally sending out release notes gathered
+  from git. If this job is triggered on an annotated tag, the tag
+  message is used as release notes. If it is triggered on an
+  unannotated tag, the commit message from the tagged commit is
+  used. If the job is called on a non-tagged commit, or if the
+  auto-release-notes parameter is set to false, then the release
+  notes are not produced.
+parameters:
+  <<: *base-leanpub-params
+  auto-release-notes:
+    description: Produce release notes if a tag or commit message is available
+    type: boolean
+    default: false
+executor: leanpub-executor
+steps:
+  - checkout
+  - run:
+      name: Publish book
+      command: |
+        export RELEASE_NOTES=<<# parameters.auto-release-notes>>$([[ -n "$CIRCLE_TAG" ]] && git cat-file -p `git rev-parse $CIRCLE_TAG` | sed '1,/^$/d')<</ parameters.auto-release-notes>>
+        if [[ -n "$RELEASE_NOTES" ]]; then
+          echo curl -d "api_key=<<parameters.api-key>>" -d "publish[email_readers]=true" --data-url-encode "publish[release_notes]=$RELEASE_NOTES" https://leanpub.com/<<parameters.book-slug>>/publish.json
+        else
+          echo curl -d "api_key=<<parameters.api-key>>" https://leanpub.com/<<parameters.book-slug>>/publish.json
+        fi

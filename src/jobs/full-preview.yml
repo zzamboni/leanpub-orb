@@ -1,0 +1,7 @@
+description: Produce a "full preview", which generates all the formats supported by Leanpub.
+parameters: *base-leanpub-params
+executor: leanpub-executor
+steps:
+  - trigger-full-preview:
+      book-slug: <<parameters.book-slug>>
+      api-key: <<parameters.api-key>>

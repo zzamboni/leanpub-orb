@@ -1,0 +1,7 @@
+description: Produce a "subset preview", which generates only the PDF.
+parameters: *base-leanpub-params
+executor: leanpub-executor
+steps:
+  - trigger-subset-preview:
+      book-slug: <<parameters.book-slug>>
+      api-key: <<parameters.api-key>>

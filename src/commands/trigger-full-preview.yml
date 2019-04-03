@@ -1,0 +1,7 @@
+description: Trigger a full preview (all formats).
+parameters: *base-leanpub-params
+steps:
+  - api-call:
+      book-slug: <<parameters.book-slug>>
+      api-key: <<parameters.api-key>>
+      endpoint: preview

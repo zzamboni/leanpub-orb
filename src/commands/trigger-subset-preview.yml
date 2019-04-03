@@ -1,0 +1,7 @@
+description: Trigger a subset (PDF only) preview.
+parameters: *base-leanpub-params
+steps:
+  - api-call:
+      book-slug: <<parameters.book-slug>>
+      api-key: <<parameters.api-key>>
+      endpoint: preview/subset
