@@ -1,0 +1,52 @@
+description: >-
+  A tag-based book workflow. A subset preview is triggered for every
+  commit (I keep my Subset.txt including the whole book, so I can
+  quickly preview the PDF after each change, but you could also
+  include the current chapter, for example). When a commit is tagged
+  with something starting with "preview", a full preview is triggered
+  (which produces all the formats supported by Leanpub). Finally,
+  publication of the book is supported by two types of tags: those
+  starting with "silent-publish" trigger a publish without sending
+  release notes; and those starting with "publish" publish the book,
+  sending out release notes to readers of the book. The text of the
+  release notes is taken from either the tag message, or the commit
+  message of the tagged commit.
+
+usage:
+  version: 2.1
+
+  orbs:
+    leanpub: zzamboni/leanpub@volatile
+
+  workflows:
+    version: 2
+    build-book:
+      jobs:
+        - leanpub/subset-preview:
+            filters:
+              tags:
+                ignore:
+                  - /^preview.*/
+                  - /^publish.*/
+                  - /^silent-publish.*/
+        - leanpub/full-preview:
+            filters:
+              tags:
+                only: /^preview.*/
+              branches:
+                ignore: /.*/
+        - leanpub/auto-publish:
+            name: leanpub/silent-publish
+            auto-release-notes: false
+            filters:
+              tags:
+                only: /^silent-publish.*/
+              branches:
+                ignore: /.*/
+        - leanpub/auto-publish:
+            auto-release-notes: true
+            filters:
+              tags:
+                only: /^publish.*/
+              branches:
+                ignore: /.*/
