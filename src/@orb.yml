@@ -7,6 +7,7 @@ executors:
     docker:
       - image: circleci/buildpack-deps
 
+# Most commands and jobs use these parameters
 base-leanpub-params: &base-leanpub-params
       book-slug:
         description: Slug of the book
@@ -18,22 +19,28 @@ base-leanpub-params: &base-leanpub-params
         default: $LEANPUB_API_KEY
 
 jobs:
+
   subset-preview:
-    description: Produce a "subset preview", which generates only the PDF.
+    description: >
+      Produce a "subset preview", which generates only the PDF.
     parameters: *base-leanpub-params
     executor: leanpub-executor
     steps:
       - trigger-subset-preview:
           book-slug: <<parameters.book-slug>>
           api-key: <<parameters.api-key>>
+
   full-preview:
-    description: Produce a "full preview", which generates all the formats supported by Leanpub.
+    description: >
+      Produce a "full preview", which generates all the formats
+      supported by Leanpub.
     parameters: *base-leanpub-params
     executor: leanpub-executor
     steps:
       - trigger-full-preview:
           book-slug: <<parameters.book-slug>>
           api-key: <<parameters.api-key>>
+
   publish:
     description: >
       Publish the book, with optional email of release notes. If the
@@ -51,19 +58,24 @@ jobs:
           book-slug: <<parameters.book-slug>>
           api-key: <<parameters.api-key>>
           release-notes: <<parameters.release-notes>>
+
   auto-publish:
     description: >
       Publish the book, optionally sending out release notes gathered
-      from git. If this job is triggered on an annotated tag, the tag
-      message is used as release notes. If it is triggered on an
-      unannotated tag, the commit message from the tagged commit is
-      used. If the job is called on a non-tagged commit, or if the
-      auto-release-notes parameter is set to false, then the release
-      notes are not produced.
+      from git. If this job is triggered on a commit that has an
+      annotated tag, the tag message is used as release notes. If it
+      is triggered on an unannotated tag, the commit message from the
+      tagged commit is used. If the job is called on a non-tagged
+      commit, or if the auto-release-notes parameter is set to false
+      (its default value), then the release notes are not produced.
     parameters:
       <<: *base-leanpub-params
       auto-release-notes:
-        description: Produce release notes if a tag or commit message is available
+        description: Produce release notes if a tag is available
+        type: boolean
+        default: false
+      dry-run:
+        description: Echo the command instead of running it?
         type: boolean
         default: false
     executor: leanpub-executor
@@ -72,14 +84,17 @@ jobs:
       - run:
           name: Publish book
           command: |
+            export ECHO_CMD=<<#parameters.dry-run>>echo<</parameters.dry-run>>
             export RELEASE_NOTES=<<# parameters.auto-release-notes>>$([[ -n "$CIRCLE_TAG" ]] && git cat-file -p `git rev-parse $CIRCLE_TAG` | sed '1,/^$/d')<</ parameters.auto-release-notes>>
             if [[ -n "$RELEASE_NOTES" ]]; then
-              echo curl -d "api_key=<<parameters.api-key>>" -d "publish[email_readers]=true" --data-url-encode "publish[release_notes]=$RELEASE_NOTES" https://leanpub.com/<<parameters.book-slug>>/publish.json
+              $ECHO_CMD curl -d "api_key=<<parameters.api-key>>" -d "publish[email_readers]=true" --data-url-encode "publish[release_notes]=$RELEASE_NOTES" https://leanpub.com/<<parameters.book-slug>>/publish.json
             else
-              echo curl -d "api_key=<<parameters.api-key>>" https://leanpub.com/<<parameters.book-slug>>/publish.json
+              $ECHO_CMD curl -d "api_key=<<parameters.api-key>>" https://leanpub.com/<<parameters.book-slug>>/publish.json
             fi
 
 commands:
+
+  # Generic entry point for triggering a Leanpub API call
   api-call:
     description: Trigger a Leanpub API call according to the endpoint parameter.
     parameters:
@@ -99,6 +114,7 @@ commands:
       - run:
           name: Call Leanpub API /<<parameters.endpoint>>.json
           command: <<#parameters.dry-run>>echo <</parameters.dry-run>>curl -d "api_key=<<parameters.api-key>>" <<parameters.extra-params>> https://leanpub.com/<<parameters.book-slug>>/<<parameters.endpoint>>.json
+
   trigger-subset-preview:
     description: Trigger a subset (PDF only) preview.
     parameters: *base-leanpub-params
@@ -107,6 +123,7 @@ commands:
           book-slug: <<parameters.book-slug>>
           api-key: <<parameters.api-key>>
           endpoint: preview/subset
+
   trigger-full-preview:
     description: Trigger a full preview (all formats).
     parameters: *base-leanpub-params
@@ -115,6 +132,7 @@ commands:
           book-slug: <<parameters.book-slug>>
           api-key: <<parameters.api-key>>
           endpoint: preview
+
   trigger-publish:
     description: Trigger publishing, with optional sending of release notes if the release-notes parameter is specified.
     parameters:
@@ -125,7 +143,6 @@ commands:
         default: ""
     steps:
       - api-call:
-          dry-run: true
           book-slug: <<parameters.book-slug>>
           api-key: <<parameters.api-key>>
           endpoint: publish
