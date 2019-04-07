@@ -87,7 +87,7 @@ jobs:
             export ECHO_CMD=<<#parameters.dry-run>>echo<</parameters.dry-run>>
             export RELEASE_NOTES=<<# parameters.auto-release-notes>>$([[ -n "$CIRCLE_TAG" ]] && git cat-file -p `git rev-parse $CIRCLE_TAG` | sed '1,/^$/d')<</ parameters.auto-release-notes>>
             if [[ -n "$RELEASE_NOTES" ]]; then
-              $ECHO_CMD curl -d "api_key=<<parameters.api-key>>" -d "publish[email_readers]=true" --data-url-encode "publish[release_notes]=$RELEASE_NOTES" https://leanpub.com/<<parameters.book-slug>>/publish.json
+              $ECHO_CMD curl -d "api_key=<<parameters.api-key>>" -d "publish[email_readers]=true" --data-urlencode "publish[release_notes]=$RELEASE_NOTES" https://leanpub.com/<<parameters.book-slug>>/publish.json
             else
               $ECHO_CMD curl -d "api_key=<<parameters.api-key>>" https://leanpub.com/<<parameters.book-slug>>/publish.json
             fi
@@ -146,4 +146,4 @@ commands:
           book-slug: <<parameters.book-slug>>
           api-key: <<parameters.api-key>>
           endpoint: publish
-          extra-params: <<# parameters.release-notes>>-d "publish[email_readers]=true" --data-url-encode "publish[release_notes]=<<parameters.release-notes>>"<</ parameters.release-notes >>
+          extra-params: <<# parameters.release-notes>>-d "publish[email_readers]=true" --data-urlencode "publish[release_notes]=<<parameters.release-notes>>"<</ parameters.release-notes >>
