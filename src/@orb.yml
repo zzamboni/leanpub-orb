@@ -87,9 +87,9 @@ jobs:
             export ECHO_CMD=<<#parameters.dry-run>>echo<</parameters.dry-run>>
             export RELEASE_NOTES=<<# parameters.auto-release-notes>>$([[ -n "$CIRCLE_TAG" ]] && git cat-file -p `git rev-parse $CIRCLE_TAG` | sed '1,/^$/d')<</ parameters.auto-release-notes>>
             if [[ -n "$RELEASE_NOTES" ]]; then
-              $ECHO_CMD curl -d "api_key=<<parameters.api-key>>" -d "publish[email_readers]=true" --data-urlencode "publish[release_notes]=$RELEASE_NOTES" https://leanpub.com/<<parameters.book-slug>>/publish.json
+              $ECHO_CMD curl -d "api_key=${<<parameters.api-key>>}" -d "publish[email_readers]=true" --data-urlencode "publish[release_notes]=$RELEASE_NOTES" https://leanpub.com/<<parameters.book-slug>>/publish.json
             else
-              $ECHO_CMD curl -d "api_key=<<parameters.api-key>>" https://leanpub.com/<<parameters.book-slug>>/publish.json
+              $ECHO_CMD curl -d "api_key=${<<parameters.api-key>>}" https://leanpub.com/<<parameters.book-slug>>/publish.json
             fi
 
 commands:
@@ -114,7 +114,7 @@ commands:
       - run:
           name: Call Leanpub API /<<parameters.endpoint>>.json
           command: |
-            <<#parameters.dry-run>>echo <</parameters.dry-run>>curl -d "api_key=<<parameters.api-key>>" <<parameters.extra-params>> https://leanpub.com/<<parameters.book-slug>>/<<parameters.endpoint>>.json
+            <<#parameters.dry-run>>echo <</parameters.dry-run>>curl -d "api_key=${<<parameters.api-key>>}" <<parameters.extra-params>> https://leanpub.com/<<parameters.book-slug>>/<<parameters.endpoint>>.json
 
   trigger-subset-preview:
     description: Trigger a subset (PDF only) preview.
