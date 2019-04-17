@@ -84,6 +84,10 @@ jobs:
       - run:
           name: Publish book
           command: |
+            if [[ -z "${<<parameters.api-key>>}" ]]; then
+              echo "ERROR: You need to provide your Leanpub API key in environment variable <<parameters.api-key>>."
+              exit 1
+            fi
             export ECHO_CMD=<<#parameters.dry-run>>echo<</parameters.dry-run>>
             export RELEASE_NOTES=<<# parameters.auto-release-notes>>$([[ -n "$CIRCLE_TAG" ]] && git cat-file -p `git rev-parse $CIRCLE_TAG` | sed '1,/^$/d')<</ parameters.auto-release-notes>>
             if [[ -n "$RELEASE_NOTES" ]]; then
@@ -114,6 +118,10 @@ commands:
       - run:
           name: Call Leanpub API /<<parameters.endpoint>>.json
           command: |
+            if [[ -z "${<<parameters.api-key>>}" ]]; then
+              echo "ERROR: You need to provide your Leanpub API key in environment variable <<parameters.api-key>>."
+              exit 1
+            fi
             <<#parameters.dry-run>>echo <</parameters.dry-run>>curl -d "api_key=${<<parameters.api-key>>}" <<parameters.extra-params>> https://leanpub.com/<<parameters.book-slug>>/<<parameters.endpoint>>.json
 
   trigger-subset-preview:
