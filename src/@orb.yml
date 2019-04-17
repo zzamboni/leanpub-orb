@@ -15,8 +15,8 @@ base-leanpub-params: &base-leanpub-params
         default: $CIRCLE_PROJECT_REPONAME
       api-key:
         description: Your Leanpub API key
-        type: string
-        default: $LEANPUB_API_KEY
+        type: env_var_name
+        default: LEANPUB_API_KEY
 
 jobs:
 
@@ -84,10 +84,6 @@ jobs:
       - run:
           name: Publish book
           command: |
-            if [[ -z "<<parameters.api-key>>" ]]; then
-              echo "You need to set LEANPUB_API_KEY."
-              exit 1
-            fi
             export ECHO_CMD=<<#parameters.dry-run>>echo<</parameters.dry-run>>
             export RELEASE_NOTES=<<# parameters.auto-release-notes>>$([[ -n "$CIRCLE_TAG" ]] && git cat-file -p `git rev-parse $CIRCLE_TAG` | sed '1,/^$/d')<</ parameters.auto-release-notes>>
             if [[ -n "$RELEASE_NOTES" ]]; then
@@ -118,10 +114,6 @@ commands:
       - run:
           name: Call Leanpub API /<<parameters.endpoint>>.json
           command: |
-            if [[ -z "<<parameters.api-key>>" ]]; then
-              echo "You need to set LEANPUB_API_KEY."
-              exit 1
-            fi
             <<#parameters.dry-run>>echo <</parameters.dry-run>>curl -d "api_key=<<parameters.api-key>>" <<parameters.extra-params>> https://leanpub.com/<<parameters.book-slug>>/<<parameters.endpoint>>.json
 
   trigger-subset-preview:
