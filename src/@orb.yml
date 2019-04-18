@@ -82,8 +82,7 @@ jobs:
     steps:
       - check-env-var-param:
           param: <<parameters.api-key>>
-          error-message: >
-            ERROR: You need to provide your Leanpub API key in environment variable <<parameters.api-key>>.
+          error-message: "ERROR: You need to provide your Leanpub API key in environment variable <<parameters.api-key>>."
       - checkout
       - run:
           name: Publish book
@@ -134,8 +133,7 @@ commands:
     steps:
       - check-env-var-param:
           param: <<parameters.api-key>>
-          error-message: >
-            ERROR: You need to provide your Leanpub API key in environment variable <<parameters.api-key>>.
+          error-message: "ERROR: You need to provide your Leanpub API key in environment variable <<parameters.api-key>>."
       - run:
           name: Call Leanpub API /<<parameters.endpoint>>.json
           command: |
