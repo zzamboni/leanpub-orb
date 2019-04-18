@@ -106,7 +106,7 @@ commands:
       error-message:
         description: Message to print if parameter is undefined
         type: string
-        default: "ERROR: You need to set environment variable <<parameter.param>>"
+        default: "ERROR: You need to set environment variable <<parameters.param>>"
     steps:
       - run: |
           if [[ -z "${<<parameters.param>>}" ]]; then
