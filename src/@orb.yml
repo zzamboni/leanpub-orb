@@ -104,13 +104,16 @@ commands:
         description: Parameter to check
         type: env_var_name
       error-message:
-        description: Message to print if parameter is undefined
+        description: Optional custom message to print if parameter is undefined
         type: string
-        default: "ERROR: You need to set environment variable <<parameters.param>>"
+        default: ""
     steps:
       - run: |
           if [[ -z "${<<parameters.param>>}" ]]; then
-            echo "<<parameters.error-message>>"
+            echo "ERROR: Missing environment variable <<parameters.param>>" >&2
+            if [[ -n "<<parameters.error-message>>" ]]; then
+              echo "<<parameters.error-message>>" >&2
+            fi
             exit 1
           fi
 
