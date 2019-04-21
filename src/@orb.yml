@@ -96,27 +96,6 @@ jobs:
             fi
 
 commands:
-
-  check-env-var-param:
-    description: Check that an env-var parameter is defined
-    parameters:
-      param:
-        description: Parameter to check
-        type: env_var_name
-      error-message:
-        description: Optional custom message to print if parameter is undefined
-        type: string
-        default: ""
-    steps:
-      - run: |
-          if [[ -z "${<<parameters.param>>}" ]]; then
-            echo "ERROR: Missing environment variable <<parameters.param>>" >&2
-            if [[ -n "<<parameters.error-message>>" ]]; then
-              echo "<<parameters.error-message>>" >&2
-            fi
-            exit 1
-          fi
-
   # Generic entry point for triggering a Leanpub API call
   api-call:
     description: Trigger a Leanpub API call according to the endpoint parameter.
