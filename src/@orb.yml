@@ -2,6 +2,9 @@ version: 2.1
 
 description: Build, preview and publish Leanpub books
 
+orbs:
+  orb-tools: circleci/orb-tools@8.6.0
+
 executors:
   leanpub-executor:
     docker:
@@ -80,7 +83,7 @@ jobs:
         default: false
     executor: leanpub-executor
     steps:
-      - check-env-var-param:
+      - orb-tools/check-env-var-param:
           param: <<parameters.api-key>>
           error-message: Please provide your Leanpub API key in environment variable <<parameters.api-key>>.
       - checkout
@@ -113,7 +116,7 @@ commands:
         type: boolean
         default: false
     steps:
-      - check-env-var-param:
+      - orb-tools/check-env-var-param:
           param: <<parameters.api-key>>
           error-message: Please provide your Leanpub API key in environment variable <<parameters.api-key>>.
       - run:
