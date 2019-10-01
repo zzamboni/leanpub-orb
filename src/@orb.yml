@@ -1,6 +1,8 @@
 version: 2.1
 
-description: Build, preview and publish Leanpub books
+description: >
+  Build, preview and publish Leanpub books.
+  View this orb's source - https://github.com/CircleCI-Public/slack-orb
 
 orbs:
   orb-tools: circleci/orb-tools@8.6.0
