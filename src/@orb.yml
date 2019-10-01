@@ -5,7 +5,7 @@ description: >
   
   You must obtain a Leanpub API key before running this orb.
 
-  View this orb's source - https://github.com/CircleCI-Public/slack-orb
+  View this orb's source - https://github.com/zzamboni/leanpub-orb
   View this orb's guide - https://circleci.com/orbs/registry/orb/zzamboni/leanpub
 
 orbs:
