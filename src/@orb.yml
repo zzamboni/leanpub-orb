@@ -3,7 +3,7 @@ version: 2.1
 description: >
   Build, preview and publish Leanpub books.
   
-  You must obtain a Leanpub API key before running this orb.
+  You must obtain a Leanpub API key before running this orb - https://leanpub.com/help/api
 
   View this orb's source - https://github.com/zzamboni/leanpub-orb
   View this orb's guide - https://circleci.com/orbs/registry/orb/zzamboni/leanpub
