@@ -2,7 +2,7 @@ version: 2.1
 
 description: >
   Build, preview and publish Leanpub books.
-  
+
   You must obtain a Leanpub API key before running this orb - https://leanpub.com/help/api
 
   View this orb's source - https://github.com/zzamboni/leanpub-orb
@@ -18,14 +18,14 @@ executors:
 
 # Most commands and jobs use these parameters
 base-leanpub-params: &base-leanpub-params
-      book-slug:
-        description: Slug of the book
-        type: string
-        default: $CIRCLE_PROJECT_REPONAME
-      api-key:
-        description: Your Leanpub API key
-        type: env_var_name
-        default: LEANPUB_API_KEY
+  book-slug:
+    description: Slug of the book
+    type: string
+    default: $CIRCLE_PROJECT_REPONAME
+  api-key:
+    description: Your Leanpub API key
+    type: env_var_name
+    default: LEANPUB_API_KEY
 
 jobs:
 
