@@ -1,26 +1,29 @@
 # leanpub-orb
+
 CircleCI orb for automating Leanpub book preview/publishing
 
 ## Leanpub
-[Leanpub](https://leanpub.com/) is a self-publishing service that supports ebooks and online courses. These can be written in Markdown and automated using the [Leanpub API](https://leanpub.com/help/api).  
-After you register for a key, you can use the API with a webhook to trigger a build directly. However, there are some problems, outlined [here](https://zzamboni.org/post/automating-leanpub-book-publishing-with-hammerspoon-and-circleci/#triggering-builds-with-a-static-webhook). 
+
+[Leanpub](https://leanpub.com/) is a self-publishing service that supports ebooks and online courses. These can be written in Markdown or Markua and their builds and publishing automated using the [bLeanpub API](https://leanpub.com/help/api).   After you register for a key, you can use the API with a webhook to trigger a build directly.
 
 ## Workflow
-The author's preferred workflow is outlined below; this can be directly triggered from git, saving time and effort:  
-- a *subset preview* is triggered for every commit to your book's repository  
-- a *regular preview* is triggered for commits with tags beginning with `preview`
-- a *silent publish* is triggered for commits with tags beginning with `silent-publish`. This sends out a published book, minus the release notes.
-- a *publish* is triggered for commits with tags beginning with `publish`. This sends out a fully published book, with release notes. These notes are taken either from description of the tag, if the tag is annotated, or from the body of the commit message, if the tag is a regular tag.  
+
+My preferred workflow is outlined below; this can be directly triggered from git, saving time and effort:
+
+- a *subset preview* is triggered for every commit to your book's repository;
+- a *regular preview* is triggered for commits with tags beginning with `preview`;
+- a *silent publish* is triggered for commits with tags beginning with `silent-publish`. This publishes the book but does not send out release notes;
+- a *publish* is triggered for commits with tags beginning with `publish`. This publishes the book and sends out release notes to readers who have opted to receive them. These notes are taken either from description of the tag, if the tag is annotated, or from the body of the commit message, if the tag is a regular tag.
 
 ## Usage
-Ensure you have the [Leanpub Spoon](https://www.hammerspoon.org/Spoons/Leanpub.html) installed.
-To use, add a `.circleci/config.yml` file to your repo, containing the following code:  
+
+To use, add a `.circleci/config.yml` file to your repo, containing the following code:
 
 ```
 version: 2.1
 
 orbs:
-  leanpub: zzamboni/leanpub@0.1.1
+  leanpub: zzamboni/leanpub@0.2.4
 
 # This tag-based book building workflow dispatches to the correct job
 # depending on tagging
@@ -56,12 +59,15 @@ workflows:
               only: /^publish.*/
             branches:
               ignore: /.*/
-```  
-Ensure your repo name corresponds to your Leanpub book slug. If not, add a `book-slug` parameter.  
-Next, enable CircleCI by:  
-- disabling your current webhooks, if any
-- login to (CircleCI)[https://circleci.com]  
-- set up your repo through the 'Add Project' screen. Skip the `config.yml` and define `LEANPUB_API_KEY` as an environment variable in your CircleCI project.
-- on the 'Workflows' screen, you can rerun your workflow, or make a commit on your repo.
+```
 
-Additional help and source: https://zzamboni.org/post/automating-leanpub-book-publishing-with-hammerspoon-and-circleci/
+Ensure your repo name corresponds to your Leanpub book slug. If not, add a `book-slug` parameter to each job definition.
+
+Next, enable CircleCI by:
+
+- disabling your current webhooks, if any
+- login to (CircleCI)[https://circleci.com]
+- set up your repo through the 'Add Project' screen. Skip the `config.yml` and define `LEANPUB_API_KEY` as an environment variable in your CircleCI project.
+- on the 'Workflows' screen, you can rerun your workflow, or make a commit on your repo to trigger the CircleCI build.
+
+You can find some additional descriptions and tips here: https://zzamboni.org/post/automating-leanpub-book-publishing-with-hammerspoon-and-circleci/
