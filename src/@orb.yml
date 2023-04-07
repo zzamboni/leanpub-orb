@@ -1,4 +1,4 @@
-version: 2.2
+version: 2.1
 
 description: >
   Build, preview and publish Leanpub books.
