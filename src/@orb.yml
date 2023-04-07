@@ -14,7 +14,7 @@ orbs:
 executors:
   leanpub-executor:
     docker:
-      - image: cimg/base
+      - image: cimg/base:2023.04
 
 # Most commands and jobs use these parameters
 base-leanpub-params: &base-leanpub-params
