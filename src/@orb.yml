@@ -1,4 +1,4 @@
-version: 2.1
+version: 2.2
 
 description: >
   Build, preview and publish Leanpub books.
@@ -9,12 +9,12 @@ description: >
   View this orb's guide - https://circleci.com/orbs/registry/orb/zzamboni/leanpub
 
 orbs:
-  orb-tools: circleci/orb-tools@8.6.0
+  orb-tools: circleci/orb-tools@11.6.1
 
 executors:
   leanpub-executor:
     docker:
-      - image: circleci/buildpack-deps
+      - image: cimg/base
 
 # Most commands and jobs use these parameters
 base-leanpub-params: &base-leanpub-params
