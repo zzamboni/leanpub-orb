@@ -9,7 +9,7 @@ description: >
   View this orb's guide - https://circleci.com/orbs/registry/orb/zzamboni/leanpub
 
 orbs:
-  orb-tools: circleci/orb-tools@11.6.1
+  orb-tools: circleci/orb-tools@8.6.0
 
 executors:
   leanpub-executor:
